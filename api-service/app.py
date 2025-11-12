@@ -5,7 +5,7 @@ import time
 
 app = Flask(__name__)
 
-APP_VERSION = "0.1" # mudar isso depois para testar o CI/CD
+APP_VERSION = "0.2" # mudar isso depois para testar o CI/CD
 MODEL_PATH = "/app/model/model.pickle"
 
 model = None

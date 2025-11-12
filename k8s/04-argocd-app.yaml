@@ -1,0 +1,21 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: tp2-julianedutra
+  namespace: argocd
+spec:
+  project: julianedutra-project
+
+  source:
+    repoURL: https://github.com/julianeagrd/tp2juliane-nuvem.git
+    targetRevision: HEAD
+    path: k8s
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: julianedutra
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

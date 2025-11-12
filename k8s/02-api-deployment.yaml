@@ -19,7 +19,7 @@ spec:
             claimName: tp2-pvc
       containers:
         - name: api-container
-          image: julianeagrd/tp2-api-service:0.2
+          image: julianeagrd/tp2-api-service:0.3
           volumeMounts:
             - name: model-storage
               mountPath: /app/model
