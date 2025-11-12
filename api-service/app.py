@@ -5,7 +5,7 @@ import time
 
 app = Flask(__name__)
 
-APP_VERSION = "0.2" # mudar isso depois para testar o CI/CD
+APP_VERSION = "0.2" 
 MODEL_PATH = "/app/model/model.pickle"
 
 model = None
@@ -15,19 +15,19 @@ def load_model():
     global model, model_timestamp
     
     if not os.path.exists(MODEL_PATH):
-        print(f"arquivo de modelo não encontrado em {MODEL_PATH}")
+        print(f"Aviso: Arquivo de modelo não encontrado em {MODEL_PATH}")
         return
 
     try:
         current_timestamp = os.path.getmtime(MODEL_PATH)
         if current_timestamp != model_timestamp:
-            print(f"mudança no modelo")
+            print(f"Detectada mudança no modelo. Carregando...")
             with open(MODEL_PATH, "rb") as f:
                 model = pickle.load(f)
             model_timestamp = current_timestamp
-            print(f"modelo carregado. data: {time.ctime(model_timestamp)}")
+            print(f"Modelo carregado. Data: {time.ctime(model_timestamp)}")
             
-    except (IOError, pickle.PickleError, EOFError) as e:
+    except Exception as e:
         print(f"Erro ao carregar o modelo: {e}")
         model = None
 
@@ -36,18 +36,23 @@ def recommend():
     load_model()
     
     if model is None:
-        return jsonify({"error": "modelo não disponível ou inválido"}), 503
+        return jsonify({"error": "Modelo não disponível ou inválido"}), 503
 
     data = request.get_json(force=True)
     if not data or 'songs' not in data:
-        return jsonify({"error": "requisição inválida. 'songs' não encontrado."}), 400
+        return jsonify({"error": "Requisição inválida. 'songs' não encontrado."}), 400
         
-    user_songs = data.get('songs', [])
+    user_songs = set(data.get('songs', []))
+    recommendations = set()
 
-    recommendations = ["Simulated-Song-1", "Simulated-Song-2"]
+    for antecedent, consequent, confidence in model:
+        if set(antecedent).issubset(user_songs):
+            recommendations.update(consequent)
+
+    final_recommendations = list(recommendations - user_songs)
 
     response = {
-        "songs": recommendations,
+        "songs": final_recommendations[:20], 
         "version": APP_VERSION,
         "model_date": time.ctime(model_timestamp) if model_timestamp > 0 else "N/A"
     }
@@ -55,7 +60,6 @@ def recommend():
     return jsonify(response)
 
 if __name__ == "__main__":
-    print("iniciando servidor flask")
+    print("Iniciando servidor Flask (DADOS REAIS)...")
     load_model() 
-
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    app.run(host="0.0.0.0", port=5000)

@@ -12,8 +12,11 @@ spec:
             claimName: tp2-pvc
       containers:
         - name: ml-job-container
-          image: julianeagrd/tp2-ml-service:0.2
+          image: julianeagrd/tp2-ml-service:0.4
           volumeMounts:
             - name: model-storage
               mountPath: /app/model
+          env:
+            - name: DATASET_FILENAME
+              value: "2023_spotify_dsl.csv"
       restartPolicy: Never
