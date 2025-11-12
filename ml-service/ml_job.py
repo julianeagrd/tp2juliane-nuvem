@@ -3,7 +3,7 @@ from fpgrowth_py import fpgrowth
 import pickle
 import os
 
-MODEL_DIR = "."
+MODEL_DIR = "/app/model"
 MODEL_PATH = os.path.join(MODEL_DIR, "model.pickle")
 
 print("usando dados de simulação:")

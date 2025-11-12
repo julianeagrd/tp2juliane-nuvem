@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tp2-api-deployment
+  namespace: julianedutra
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tp2-api
+  template:
+    metadata:
+      labels:
+        app: tp2-api
+    spec:
+      volumes:
+        - name: model-storage
+          persistentVolumeClaim:
+            claimName: tp2-pvc
+      containers:
+        - name: api-container
+          image: julianeagrd/tp2-api-service:0.2
+          volumeMounts:
+            - name: model-storage
+              mountPath: /app/model
+              readOnly: true
+          ports:
+            - containerPort: 5000
