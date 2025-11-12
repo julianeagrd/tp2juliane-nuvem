@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: tp2-ml-job
+  name: tp2-ml-job-ds2
   namespace: julianedutra
 spec:
   template:
@@ -18,5 +18,5 @@ spec:
               mountPath: /app/model
           env:
             - name: DATASET_FILENAME
-              value: "2023_spotify_dsl.csv"
+              value: "2023_spotify_ds2.csv"
       restartPolicy: Never
